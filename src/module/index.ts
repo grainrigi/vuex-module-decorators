@@ -1,4 +1,5 @@
 import { GetterTree, Module as Mod, Store } from 'vuex'
+import { Action } from '../action';
 import { DynamicModuleOptions, ModuleOptions } from '../moduleoptions'
 import { stateFactory as sf } from './stateFactory'
 import { addPropertiesToObject } from '../helpers'
@@ -68,6 +69,13 @@ function moduleDecoratorFactory<S>(moduleOptions: ModuleOptions) {
     let parentModule = Object.getPrototypeOf(module)
     while (parentModule.name !== 'VuexModule' && parentModule.name !== '') {
       addGettersToModule(module, parentModule)
+      // action re-registration
+      if (parentModule.actions) {
+        if (!module.actions) module.actions = {};
+        for (const k of Object.keys(parentModule.actions)) {
+          Action(parentModule.actions[k].__vmdParam)({ constructor: module }, k, { value: parentModule.prototype[k] });
+        }
+      }
       parentModule = Object.getPrototypeOf(parentModule)
     }
     addGettersToModule(module, module)

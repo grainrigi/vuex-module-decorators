@@ -60,6 +60,7 @@ function actionDecoratorFactory<T>(params?: ActionDecoratorParams): MethodDecora
       }
     }
     module.actions![key as string] = root ? { root, handler: action } : action
+    ;(module.actions![key as string] as any).__vmdParam = params as any
   }
 }
 

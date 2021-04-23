@@ -71,9 +71,9 @@ function moduleDecoratorFactory<S>(moduleOptions: ModuleOptions) {
       addGettersToModule(module, parentModule)
       // action re-registration
       if (parentModule.actions) {
-        if (!module.actions) module.actions = {};
+        if (!module.actions) module.actions = {}
         for (const k of Object.keys(parentModule.actions)) {
-          Action(parentModule.actions[k].__vmdParam)({ constructor: module }, k, { value: parentModule.prototype[k] });
+          if (!module.actions[k]) Action(parentModule.actions[k].__vmdParam)({ constructor: module }, k, { value: parentModule.prototype[k] })
         }
       }
       parentModule = Object.getPrototypeOf(parentModule)
